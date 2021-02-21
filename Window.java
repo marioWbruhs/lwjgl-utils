@@ -1,3 +1,5 @@
+import org.lwjgl.glfw.GLFWImage;
+import java.io.IOException;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -17,6 +19,33 @@ public class Window {
         if (window == 0) {
             throw new IllegalStateException("failed to create window");
         }
+
+        glfwShowWindow(window);
+
+        glfwMakeContextCurrent(window);
+        this.backgroundColor = new float[] {backgroundColor[0] / 255f, backgroundColor[1] / 255f, backgroundColor[2] / 255f, backgroundColor[3] / 255f};
+
+        this.fps = 0;
+        this.lastFps = 0;
+        this.startTimeFps = System.currentTimeMillis();
+
+    }
+
+    public Window(int width, int height, String title, int monitor, int share, int[] backgroundColor, String icon) throws IOException {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        this.window = glfwCreateWindow(width, height, title, monitor, share);
+
+        if (window == 0) {
+            throw new IllegalStateException("failed to create window");
+        }
+
+        GLFWImage image = GLFWImage.malloc(); GLFWImage.Buffer imagebf = GLFWImage.malloc(1);
+        ImageLoader imgL = ImageLoader.load_image(icon);
+        image.set(imgL.get_width(), imgL.get_heigh(), imgL.get_image());
+        imagebf.put(0, image);
+        glfwSetWindowIcon(window, imagebf);
+
+        //glfwSetWindowIcon(window, ImageLoader.load_image(icon));
 
         glfwShowWindow(window);
 
